@@ -1,5 +1,5 @@
 (ns earthmoving.governor-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [earthmoving.store :as store]
             [earthmoving.governor :as governor]))
 
