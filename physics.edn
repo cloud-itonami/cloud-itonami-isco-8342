@@ -1,0 +1,33 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:physics` runs it.
+;;
+;; README "Robotics premise": a survey and grade-checking robot surveys the
+;; site and verifies grade alongside the operated plant; work near buried
+;; utilities or in occupied zones needs human sign-off. Its physical work:
+;; driving itself across the earthworks slopes to its survey points, and the
+;; dewatering line that keeps the excavation it checks dry.
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+;; Replacing an estimate with a sourced value is this bot's growth work.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isco-8342"
+ :cases
+ [{:id :survey-rover-on-batter
+   :kind :transport
+   :procedure "tracked survey rover carrying its GNSS/total-station payload climbs 50 m of an earthworks batter slope to a check point"
+   :params {:mass-kg 80.0 :payload-kg 15.0 :distance-m 50.0 :v-max-mps 1.0 :a-max-mps2 0.5
+            :brake-decel-mps2 0.8 :drive-force-n 300.0 :crr 0.10
+            :cog-height-m 0.35 :support-half-length-m 0.35 :max-time-s 1200.0}
+   :sweep {:param :slope-deg :values [0.0 5.0 10.0 12.0 14.0]}
+   :quantity :cycle-time-s
+   :limit {:max 70.0 :basis "estimate: survey plan allows about 70 s per 50 m move between check points"}
+   :boundary {:lo 0.0 :hi 20.0}}
+  {:id :excavation-dewatering-line
+   :kind :pipe-flow
+   :procedure "submersible pump lifts groundwater 6 m out of the excavation through 50 m of 100 mm discharge hose"
+   :params {:diameter-m 0.100 :length-m 50.0 :roughness-m 1.5e-5
+            :density-kg-m3 1000.0 :viscosity-pa-s 1.1e-3 :pump-efficiency 0.50 :elevation-m 6.0}
+   :sweep {:param :q-m3s :values [0.005 0.010 0.015 0.020 0.030]}
+   :quantity :pressure-drop-pa
+   :limit {:max 120000.0 :basis "estimate: about 12 m of head from a contractor's submersible dewatering pump at duty"}
+   :boundary {:lo 0.001 :hi 0.05}}]}
